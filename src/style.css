@@ -1,3 +1,8 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
 .main-container {
   display: flex;
   flex-direction: column;
@@ -10,15 +15,49 @@
   background-color: yellow;
   color: purple;
   max-width: 750px;
-  height: 200px;
+  height: 120px;
   justify-content: center;
 }
 
 .keys {
-  color: white;
-  background-color: green;
+  color: black;
+  background-color: white;
   max-width: 75px;
-  margin: 5px;
+  min-width: 50px;
+  margin: 0px;
+  border: solid;
+  display: flex;
+  height: 200px;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+.black-keys {
+  background-color: black;
+  color:white;
+  max-width: 45px;
+  min-width: 40px;
+  display: flex;
+  height: 120px;
+  flex-direction: column;
+  z-index: 9;
+  margin-right: -22.5px;
+  margin-left: -22.5px;
+}
+
+.key-subcontainer {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+h2 {
+ margin: 5px;
+ font-size: 1.2rem;
+}
+
+p {
+  text-align: center;
 }
 
 .pressed-key {

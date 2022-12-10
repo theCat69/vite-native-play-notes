@@ -5,12 +5,19 @@ import b3Url from '../musicPiano/B3.mp3';
 import c3Url from '../musicPiano/C3.mp3';
 import c4Url from '../musicPiano/C4.mp3';
 import db3Url from '../musicPiano/Db3.mp3';
+import db4Url from '../musicPiano/Db4.mp3';
 import d3Url from '../musicPiano/D3.mp3';
+import d4Url from '../musicPiano/D4.mp3';
 import eb3Url from '../musicPiano/Eb3.mp3';
+import eb4Url from '../musicPiano/Eb4.mp3';
 import e3Url from '../musicPiano/E3.mp3';
+import e4Url from '../musicPiano/E4.mp3';
 import f3Url from '../musicPiano/F3.mp3';
+import f4Url from '../musicPiano/F4.mp3';
 import gb3Url from '../musicPiano/Gb3.mp3';
+import gb4Url from '../musicPiano/Gb4.mp3';
 import g3Url from '../musicPiano/G3.mp3';
+import g4Url from '../musicPiano/G4.mp3';
 
 import './style.css';
 import atanProcessorUrl from "./audio-worklet.js?url";
@@ -133,6 +140,62 @@ const keyList: Key[] = [
     keyPress: "k",
     isWhite: true,
     isPlaying: false
+  },
+  {
+    id: 'keyDb4',
+    name: 'Do#',
+    url: db4Url,
+    keyPress: "o",
+    isWhite: false,
+    isPlaying: false
+  },
+  {
+    id: "keyD4",
+    name: "Ré",
+    url: d4Url,
+    keyPress: "l",
+    isWhite: true,
+    isPlaying: false
+  },
+  {
+    id: "keyEb4",
+    name: "Ré#",
+    url: eb4Url,
+    keyPress: "p",
+    isWhite: false,
+    isPlaying: false
+  },
+  {
+    id: "keyE4",
+    name: "Mi",
+    url: e4Url,
+    keyPress: "m",
+    isWhite: true,
+    isPlaying: false
+  },
+  {
+    id: "keyF4",
+    name: "Fa",
+    url: f4Url,
+    keyPress: "ù",
+    isWhite: true,
+    isPlaying: false
+  },
+  {
+    id: "keyGb4",
+    name: "Fa#",
+    url: gb4Url,
+    keyPress: "$",
+    isWhite: false,
+    isPlaying: false
+  },
+  {
+    id: "keyG4",
+    name: "Sol",
+    url: g4Url,
+    keyPress: "*",
+    isWhite: true,
+    isPlaying: false
   }
 ]
 
@@ -226,18 +289,29 @@ const htmlContainer = document.querySelector<HTMLDivElement>('#container')!
 let containerInnerHtml = "";
 keyList.forEach(
   key => {
-    containerInnerHtml += `<div class="keys" id="${key.id}"><h2>${key.name}</h2><p>Press ${key.keyPress.toUpperCase()}</p></div>`;
+    if (!key.isWhite) {
+      containerInnerHtml += `<div class="black-keys" id="${key.id}"><h2>${key.name}</h2><p>${key.keyPress.toUpperCase()}</p></div>`;
+    } else {
+      containerInnerHtml += `<div class="keys" id="${key.id}"><div class="key-subcontainer"><h2>${key.name}</h2><p>${key.keyPress.toUpperCase()}</p></div></div>`;
+    }
+   
   }
 )
 htmlContainer.innerHTML = containerInnerHtml;
 
 // Binding on click and mouseup event
-const keys = document.querySelectorAll<HTMLDivElement>('.keys')!;
-
-keys.forEach((el) => {
+function addMouseEvent(el: HTMLDivElement) {
   el.addEventListener("mousedown", (evt: MouseEvent) => play(evt.target));
   el.addEventListener("mouseup", (evt: MouseEvent) => unplay(evt.target));
-});
+}
+
+const keys = document.querySelectorAll<HTMLDivElement>('.keys')!;
+
+keys.forEach(el => addMouseEvent(el));
+
+const blackKeys = document.querySelectorAll<HTMLDivElement>('.black-keys')!;
+
+blackKeys.forEach(el => addMouseEvent(el));
 
 
 //Binding keys event 
