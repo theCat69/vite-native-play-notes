@@ -1,12 +1,3 @@
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: green;
-  margin-top: 60px;
-}
-
 .main-container {
   display: flex;
   flex-direction: column;
@@ -14,18 +5,19 @@
 }
 
 .container {
+  margin-top: 100px;
   display: flex;
   background-color: yellow;
   color: purple;
-  width: 500px;
-  height: 500px;
+  width: 750px;
+  height: 200px;
   justify-content: center;
 }
 
 .keys {
-  color: red;
+  color: white;
   background-color: green;
-  width: 50px;
+  width: 75px;
   margin: 5px;
 }
 
