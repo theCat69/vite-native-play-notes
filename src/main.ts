@@ -1,79 +1,162 @@
-import './style.css'
+import a4Url from '../musicFiles/a4.mp3';
+import b4Url from '../musicFiles/b4.mp3';
 import c3Url from '../musicFiles/c3.mp3';
+import c4Url from '../musicFiles/c4.mp3';
 import d3Url from '../musicFiles/d3.mp3';
 import e3Url from '../musicFiles/e3.mp3';
 import f3Url from '../musicFiles/f3.mp3';
 import g3Url from '../musicFiles/g3.mp3';
-import a4Url from '../musicFiles/a4.mp3';
-import b4Url from '../musicFiles/b4.mp3';
-import c4Url from '../musicFiles/c4.mp3';
-
-const app = document.querySelector<HTMLDivElement>('#app')!;
-
-app.innerHTML = `
-  <h1>Hello Vite!</h1>
-  <a href="https://vitejs.dev/guide/features.html" target="_blank">Documentation</a>
-`;
-
+import './style.css';
+import atanProcessorUrl from "./audio-worklet.js?url";
 
 //Defining each Key
 type Key = {
   id: string;
-  audio: HTMLAudioElement;
+  url: string,
   keyPress: string;
+  file?: File;
+  buffer?: AudioBuffer;
+  audioWorkletNode?: AudioWorkletNode;
+  audioBufferSourceNode?: AudioBufferSourceNode;
+  audioContext?: AudioContext;
+  isPlaying: boolean;
 }
 
 const keyList: Key[] = [
   {
     id: "key1",
-    audio: new Audio(c3Url),
-    keyPress: "a"
+    url: c3Url,
+    keyPress: "a",
+    isPlaying: false
   },
   {
     id: "key2",
-    audio: new Audio(d3Url),
-    keyPress: "z"
+    url: d3Url,
+    keyPress: "z",
+    isPlaying: false
   },
   {
     id: "key3",
-    audio: new Audio(e3Url),
-    keyPress: "e"
+    url: e3Url,
+    keyPress: "e",
+    isPlaying: false
   },
   {
     id: "key4",
-    audio: new Audio(f3Url),
-    keyPress: "r"
+    url: f3Url,
+    keyPress: "r",
+    isPlaying: false
   },
   {
     id: "key5",
-    audio: new Audio(g3Url),
-    keyPress: "t"
+    url: g3Url,
+    keyPress: "t",
+    isPlaying: false
   },
   {
     id: "key6",
-    audio: new Audio(a4Url),
-    keyPress: "y"
+    url: a4Url,
+    keyPress: "y",
+    isPlaying: false
   },
   {
     id: "key7",
-    audio: new Audio(b4Url),
-    keyPress: "u"
+    url: b4Url,
+    keyPress: "u",
+    isPlaying: false
   },
   {
     id: "key8",
-    audio: new Audio(c4Url),
-    keyPress: "i"
+    url: c4Url,
+    keyPress: "i",
+    isPlaying: false
   }
 ]
 
+const fetchMp3WithXhr = (key: Key) => {
+  var blob = null;
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", key.url);
+  xhr.responseType = "blob";//force the HTTP response, response-type header to be blob
+  xhr.onload = async () => {
+    blob = xhr.response;//xhr.response is now a blob object
+    var file = new File([blob], key.url, { type: 'audio/mp3', lastModified: Date.now() });
+    console.log(file);
+    key.file = file;
+  }
+  xhr.send()
+}
+
+keyList.forEach((key) => fetchMp3WithXhr(key));
+
+//audio worker
+console.log(atanProcessorUrl)
+
+
+const createWorkletNode = async (
+  context: BaseAudioContext,
+  name: string,
+  url: string
+) => {
+  // ensure audioWorklet has been loaded
+  try {
+    return new AudioWorkletNode(context, name);
+  } catch (err) {
+    await context.audioWorklet.addModule(url);
+    return new AudioWorkletNode(context, name);
+  }
+}
+
+const startAudioSideWorker = async (noteKey: Key) => {
+  //preconditions
+  /*   if(noteKey.isPlaying) {
+      return
+    } */
+  if (!noteKey.file) {
+    return
+  }
+  //starting playing key
+  noteKey.isPlaying = true;
+  //creating audiocontext if it doesnt exist
+  if (!noteKey.audioContext) {
+    noteKey.audioContext = new AudioContext();
+  }
+  const context = noteKey.audioContext;
+  // convert uploaded file to AudioBuffer
+  if (!noteKey.buffer) {
+    noteKey.buffer = await context.decodeAudioData(await noteKey.file!.arrayBuffer());
+  }
+  const buffer = noteKey.buffer;
+  // create source and set buffer
+  noteKey.audioBufferSourceNode = context.createBufferSource();
+
+  const source = noteKey.audioBufferSourceNode;
+  source.buffer = buffer;
+  // create atan node
+  if (!noteKey.audioWorkletNode) {
+    noteKey.audioWorkletNode = await createWorkletNode(context, "atan-processor", atanProcessorUrl);
+  }
+  const atan = noteKey.audioWorkletNode;
+  // connect everything and automatically start playing
+  source.connect(atan).connect(context.destination);
+  source.start(0);
+  /*   source.onended = () => noteKey.isPlaying = false; */
+}
+
 //play & unplay methods
 const play = (tgt: any) => {
+  const key = keyList.find((keyOb) => tgt.id === keyOb.id)!;
+  if (key.isPlaying) {
+    return
+  }
   tgt.classList.add('pressed-key');
-  keyList.find((keyOb) => tgt.id === keyOb.id)?.audio.play();
+  startAudioSideWorker(key);
 }
 
 const unplay = (tgt: any) => {
   tgt.classList.remove('pressed-key');
+  const key = keyList.find((keyOb) => tgt.id === keyOb.id)!;
+  key.isPlaying = false;
 }
 
 // Binding on click and mouseup event
@@ -102,3 +185,6 @@ window.addEventListener("keyup", (evt: KeyboardEvent) => {
     unplay(keyEl);
   }
 }, true);
+
+
+
