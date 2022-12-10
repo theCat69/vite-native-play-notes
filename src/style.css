@@ -9,7 +9,7 @@
   display: flex;
   background-color: yellow;
   color: purple;
-  width: 750px;
+  max-width: 750px;
   height: 200px;
   justify-content: center;
 }
@@ -17,7 +17,7 @@
 .keys {
   color: white;
   background-color: green;
-  width: 75px;
+  max-width: 75px;
   margin: 5px;
 }
 

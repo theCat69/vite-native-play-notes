@@ -1,74 +1,137 @@
-import a4Url from '../musicFiles/a4.mp3';
-import b4Url from '../musicFiles/b4.mp3';
-import c3Url from '../musicFiles/c3.mp3';
-import c4Url from '../musicFiles/c4.mp3';
-import d3Url from '../musicFiles/d3.mp3';
-import e3Url from '../musicFiles/e3.mp3';
-import f3Url from '../musicFiles/f3.mp3';
-import g3Url from '../musicFiles/g3.mp3';
+import ab3Url from '../musicPiano/Ab3.mp3';
+import a3Url from '../musicPiano/A3.mp3';
+import bb3Url from '../musicPiano/Bb3.mp3';
+import b3Url from '../musicPiano/B3.mp3';
+import c3Url from '../musicPiano/C3.mp3';
+import c4Url from '../musicPiano/C4.mp3';
+import db3Url from '../musicPiano/Db3.mp3';
+import d3Url from '../musicPiano/D3.mp3';
+import eb3Url from '../musicPiano/Eb3.mp3';
+import e3Url from '../musicPiano/E3.mp3';
+import f3Url from '../musicPiano/F3.mp3';
+import gb3Url from '../musicPiano/Gb3.mp3';
+import g3Url from '../musicPiano/G3.mp3';
+
 import './style.css';
 import atanProcessorUrl from "./audio-worklet.js?url";
 
 //Defining each Key
 type Key = {
   id: string;
+  name: string;
   url: string,
   keyPress: string;
+  isWhite: boolean;
   file?: File;
   buffer?: AudioBuffer;
   audioWorkletNode?: AudioWorkletNode;
-  audioBufferSourceNode?: AudioBufferSourceNode;
   audioContext?: AudioContext;
   isPlaying: boolean;
 }
 
 const keyList: Key[] = [
   {
-    id: "key1",
+    id: "keyC3",
+    name: "Do",
     url: c3Url,
-    keyPress: "a",
+    keyPress: "q",
+    isWhite: true,
     isPlaying: false
   },
   {
-    id: "key2",
-    url: d3Url,
+    id: 'keyDb3',
+    name: 'Do#',
+    url: db3Url,
     keyPress: "z",
+    isWhite: false,
     isPlaying: false
   },
   {
-    id: "key3",
-    url: e3Url,
+    id: "keyD3",
+    name: "Ré",
+    url: d3Url,
+    keyPress: "s",
+    isWhite: true,
+    isPlaying: false
+  },
+  {
+    id: "keyEb3",
+    name: "Ré#",
+    url: eb3Url,
     keyPress: "e",
+    isWhite: false,
     isPlaying: false
   },
   {
-    id: "key4",
+    id: "keyE3",
+    name: "Mi",
+    url: e3Url,
+    keyPress: "d",
+    isWhite: true,
+    isPlaying: false
+  },
+  {
+    id: "keyF3",
+    name: "Fa",
     url: f3Url,
-    keyPress: "r",
+    keyPress: "f",
+    isWhite: true,
     isPlaying: false
   },
   {
-    id: "key5",
-    url: g3Url,
+    id: "keyGb3",
+    name: "Fa#",
+    url: gb3Url,
     keyPress: "t",
+    isWhite: false,
     isPlaying: false
   },
   {
-    id: "key6",
-    url: a4Url,
+    id: "keyG3",
+    name: "Sol",
+    url: g3Url,
+    keyPress: "g",
+    isWhite: true,
+    isPlaying: false
+  },
+  {
+    id: "keyAb3",
+    name: "Sol#",
+    url: ab3Url,
     keyPress: "y",
+    isWhite: false,
     isPlaying: false
   },
   {
-    id: "key7",
-    url: b4Url,
+    id: "keyA3",
+    name: "La",
+    url: a3Url,
+    keyPress: "h",
+    isWhite: true,
+    isPlaying: false
+  },
+  {
+    id: "keyBb3",
+    name: "La#",
+    url: bb3Url,
     keyPress: "u",
+    isWhite: false,
     isPlaying: false
   },
   {
-    id: "key8",
+    id: "keyB3",
+    name: "Si",
+    url: b3Url,
+    keyPress: "j",
+    isWhite: true,
+    isPlaying: false
+  },
+  {
+    id: "keyC4",
+    name: "Do",
     url: c4Url,
-    keyPress: "i",
+    keyPress: "k",
+    isWhite: true,
     isPlaying: false
   }
 ]
@@ -128,9 +191,7 @@ const startAudioSideWorker = async (noteKey: Key) => {
   }
   const buffer = noteKey.buffer;
   // create source and set buffer
-  noteKey.audioBufferSourceNode = context.createBufferSource();
-
-  const source = noteKey.audioBufferSourceNode;
+  const source = context.createBufferSource();
   source.buffer = buffer;
   // create atan node
   if (!noteKey.audioWorkletNode) {
@@ -159,15 +220,25 @@ const unplay = (tgt: any) => {
   key.isPlaying = false;
 }
 
+//generating keys HTML
+const htmlContainer = document.querySelector<HTMLDivElement>('#container')!
+
+let containerInnerHtml = "";
+keyList.forEach(
+  key => {
+    containerInnerHtml += `<div class="keys" id="${key.id}"><h2>${key.name}</h2><p>Press ${key.keyPress.toUpperCase()}</p></div>`;
+  }
+)
+htmlContainer.innerHTML = containerInnerHtml;
+
 // Binding on click and mouseup event
 const keys = document.querySelectorAll<HTMLDivElement>('.keys')!;
 
-keys.forEach(
-  el => {
-    el.addEventListener("mousedown", (evt: MouseEvent) => play(evt.target));
-    el.addEventListener("mouseup", (evt: MouseEvent) => unplay(evt.target));
-  }
-)
+keys.forEach((el) => {
+  el.addEventListener("mousedown", (evt: MouseEvent) => play(evt.target));
+  el.addEventListener("mouseup", (evt: MouseEvent) => unplay(evt.target));
+});
+
 
 //Binding keys event 
 window.addEventListener("keydown", (evt: KeyboardEvent) => {
