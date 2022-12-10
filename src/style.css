@@ -35,7 +35,7 @@
 
 .black-keys {
   background-color: black;
-  color:white;
+  color: white;
   max-width: 45px;
   min-width: 40px;
   display: flex;
@@ -48,19 +48,47 @@
 
 .key-subcontainer {
   display: flex;
+  pointer-events: none;
   flex-direction: column-reverse;
 }
 
-h2 {
- margin: 5px;
- font-size: 1.2rem;
+.name {
+  margin: 5px;
+  font-size: 1.2rem;
+  pointer-events: none;
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -khtml-user-select: none;
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Old versions of Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently
+                               supported by Chrome, Edge, Opera and Firefox */
 }
 
-p {
+.key-to-press {
   text-align: center;
+  pointer-events: none;
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -khtml-user-select: none;
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Old versions of Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently
+                                supported by Chrome, Edge, Opera and Firefox */
 }
 
 .pressed-key {
   background-color: red;
 }
-
