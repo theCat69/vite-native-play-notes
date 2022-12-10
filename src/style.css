@@ -1,0 +1,35 @@
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: green;
+  margin-top: 60px;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container {
+  display: flex;
+  background-color: yellow;
+  color: purple;
+  width: 500px;
+  height: 500px;
+  justify-content: center;
+}
+
+.keys {
+  color: red;
+  background-color: green;
+  width: 50px;
+  margin: 5px;
+}
+
+.pressed-key {
+  background-color: red;
+}
+
