@@ -25,8 +25,8 @@ export type Key = {
   url: string,
   keyPress: string;
   isWhite: boolean;
-  file?: File;
-  buffer?: AudioBuffer;
+  blobBuffer?: ArrayBuffer;
+  audioBuffer?: AudioBuffer;
   audioWorkletNode?: AudioWorkletNode;
   audioContext?: AudioContext;
   isPlaying: boolean;
@@ -198,8 +198,6 @@ export class KeyManager {
 
   keysDomElements: HTMLDivElement[] = [];
 
-  private nbOfKeyLoaded = 0;
-
   static readonly MP3_READY_EVENT = 'Mp3Loaded';
   static readonly NOTE_DOM_READY_EVENT = 'NoteDOMReady';
 
@@ -217,27 +215,13 @@ export class KeyManager {
   }
 
   private async fetchAllKeysMp3(): Promise<void> {
-    this.keyList.forEach((key) => this.fetchMp3WithXhr(key));
+    const promises: Promise<void>[] = [];
+    this.keyList.forEach((key) => promises.push(this.fetchMp3WithXhr(key)));
+    Promise.all(promises).then(() => window.dispatchEvent(new Event(KeyManager.MP3_READY_EVENT)));
   }
 
   private async fetchMp3WithXhr(key: Key): Promise<void> {
-    var blob = null;
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", key.url);
-    xhr.responseType = "blob"; //force the HTTP response, response-type header to be blob
-    xhr.onload = async () => {
-      blob = xhr.response; //xhr.response is now a blob object
-      key.file = new File([blob], key.url, { type: 'audio/mp3', lastModified: Date.now() });
-      this.handleMp3ReadyEvent();
-    }
-    xhr.send()
-  }
-
-  private handleMp3ReadyEvent() {
-    this.nbOfKeyLoaded += 1;
-    if (this.nbOfKeyLoaded == this.keyList.length) {
-      window.dispatchEvent(new Event(KeyManager.MP3_READY_EVENT));
-    }
+    key.blobBuffer = await (await (await fetch(new Request(key.url))).blob()).arrayBuffer();
   }
 
   private async generateDom(): Promise<void> {
