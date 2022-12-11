@@ -9,7 +9,6 @@ type AppTouch = {
 
 export class MobileEventManager extends AppEventManager {
 
-
   private ongoingTouches: AppTouch[] = [];
 
   private copyTouch({ identifier, pageX, pageY, target }: Touch): AppTouch {

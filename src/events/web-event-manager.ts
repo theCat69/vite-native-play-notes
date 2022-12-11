@@ -1,4 +1,5 @@
 import { AppEventManager } from "./app-event-manager";
+import { MobileEventManager } from "./mobile-event-manager";
 
 export class WebEventManager extends AppEventManager {
 
@@ -7,6 +8,9 @@ export class WebEventManager extends AppEventManager {
       this.addMouseEvent(el);
     });
     this.addKeyEvents();
+    if(this.isTouchDevice()) {
+      new MobileEventManager(this.keyManager, this.audioWorkletManager).addDOMEvents();
+    }
   }
 
   private async addMouseEvent(el: HTMLDivElement): Promise<void> {
@@ -30,5 +34,9 @@ export class WebEventManager extends AppEventManager {
         this.unplay(keyEl);
       }
     }, true);
+  }
+
+  private isTouchDevice() {
+    return (('ontouchstart' in window) || (navigator.maxTouchPoints > 0));
   }
 }
