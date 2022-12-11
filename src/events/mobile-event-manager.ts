@@ -1,6 +1,30 @@
 import { AppEventManager } from "./app-event-manager";
 
+type AppTouch = {
+  identifier: number;
+  pageX: number;
+  pageY: number;
+  target: any;
+}
+
 export class MobileEventManager extends AppEventManager {
+
+
+  private ongoingTouches: AppTouch[] = [];
+
+  private copyTouch({ identifier, pageX, pageY, target }: Touch): AppTouch {
+    return { identifier, pageX, pageY, target };
+  }
+
+  private ongoingTouchIndexById(idToFind: number): number {
+    for (let i = 0; i < this.ongoingTouches.length; i++) {
+      const id = this.ongoingTouches[i].identifier;
+      if (id === idToFind) {
+        return i;
+      }
+    }
+    return -1;    // not found
+  }
 
   async addDOMEvents(): Promise<void> {
     this.keyManager.keysDomElements.forEach(el => {
@@ -17,11 +41,10 @@ export class MobileEventManager extends AppEventManager {
 
   private handleStart(evt: TouchEvent): void {
     evt.preventDefault();
-    console.log('touchstart.');
     const touches = evt.changedTouches;
-
     for (let i = 0; i < touches.length; i++) {
       this.play(touches[i].target);
+      this.ongoingTouches.push(this.copyTouch(touches[i]));
     }
   }
 
@@ -29,42 +52,43 @@ export class MobileEventManager extends AppEventManager {
     evt.preventDefault();
     const touches = evt.changedTouches;
     for (let i = 0; i < touches.length; i++) {
-      const el = document.elementFromPoint(touches[i].pageX, touches[i].pageY);
-      this.play(el);
+      const idx = this.ongoingTouchIndexById(touches[i].identifier);
+      if (idx >= 0) {
+        const el = document.elementFromPoint(touches[i].pageX, touches[i].pageY);
+        if (el && this.ongoingTouches[idx].target.id !== el.id) {
+          this.unplay(this.ongoingTouches[idx].target);
+          this.ongoingTouches[idx].target = el;
+        }
+        this.play(el);
+      }
     }
   }
 
   private handleEnd(evt: TouchEvent): void {
     evt.preventDefault();
     const touches = evt.changedTouches;
-
     for (let i = 0; i < touches.length; i++) {
+      const idx = this.ongoingTouchIndexById(touches[i].identifier);
+      if (idx >= 0) {
+        this.ongoingTouches.splice(idx, 1);
+      }
+      const el = document.elementFromPoint(touches[i].pageX, touches[i].pageY);
       this.unplay(touches[i].target);
+      this.unplay(el);
     }
   }
+
 
   private handleCancel(evt: TouchEvent): void {
     evt.preventDefault();
     const touches = evt.changedTouches;
     for (let i = 0; i < touches.length; i++) {
+      const idx = this.ongoingTouchIndexById(touches[i].identifier);
+      if (idx >= 0) {
+        this.ongoingTouches.splice(idx, 1);
+      }
       this.unplay(touches[i].target);
     }
   }
+
 }
-
-/* let ongoinTouches: { identifier: number, pageX: number, pageY: number, target: EventTarget }[] = []; */
-
-/* const copyTouch = ({ identifier, pageX, pageY, target } : Touch) => {
-  return { identifier, pageX, pageY, target };
-} */
-
-/* const ongoingTouchIndexById = (idToFind: number) => {
-  for (let i = 0; i < ongoinTouches.length; i++) {
-    const id = ongoinTouches[i].identifier;
-
-    if (id === idToFind) {
-      return i;
-    }
-  }
-  return -1;    // not found
-} */
