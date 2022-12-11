@@ -19,6 +19,10 @@
   justify-content: center;
 }
 
+.container-mobile {
+  margin-top : 0;
+}
+
 .keys {
   color: black;
   background-color: white;
