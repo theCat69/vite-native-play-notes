@@ -5,7 +5,7 @@ import { KeyManager } from "../keys/key-manager";
 export abstract class AppEventManager {
 
   protected keyManager: KeyManager;
-  private audioWorkletManager: AudioWorkletManager;
+  protected audioWorkletManager: AudioWorkletManager;
 
   abstract addDOMEvents(): Promise<void>;
 
