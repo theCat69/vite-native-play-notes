@@ -1,3 +1,8 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
 .main-container {
   display: flex;
   flex-direction: column;
@@ -9,19 +14,85 @@
   display: flex;
   background-color: yellow;
   color: purple;
-  width: 750px;
-  height: 200px;
+  max-width: 750px;
+  height: 120px;
   justify-content: center;
 }
 
+.container-mobile {
+  margin-top : 0;
+}
+
 .keys {
+  color: black;
+  background-color: white;
+  max-width: 75px;
+  min-width: 50px;
+  margin: 0px;
+  border: solid;
+  display: flex;
+  height: 200px;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+.black-keys {
+  background-color: black;
   color: white;
-  background-color: green;
-  width: 75px;
+  max-width: 45px;
+  min-width: 40px;
+  display: flex;
+  height: 120px;
+  flex-direction: column;
+  z-index: 9;
+  margin-right: -22.5px;
+  margin-left: -22.5px;
+}
+
+.key-subcontainer {
+  display: flex;
+  pointer-events: none;
+  flex-direction: column-reverse;
+}
+
+.name {
   margin: 5px;
+  font-size: 1.2rem;
+  pointer-events: none;
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -khtml-user-select: none;
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Old versions of Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently
+                               supported by Chrome, Edge, Opera and Firefox */
+}
+
+.key-to-press {
+  text-align: center;
+  pointer-events: none;
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -khtml-user-select: none;
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Old versions of Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently
+                                supported by Chrome, Edge, Opera and Firefox */
 }
 
 .pressed-key {
   background-color: red;
 }
-
