@@ -32,7 +32,7 @@ export class AudioWorkletManager {
     const context = this.audioContext!;
     // create source and set buffer
     const source = context.createBufferSource();
-    source.buffer = noteKey.buffer!;
+    source.buffer = noteKey.audioBuffer!;
     // connect everything and automatically start playing
     source.connect(noteKey.audioWorkletNode!).connect(context.destination);
     source.start(0);
@@ -45,7 +45,7 @@ export class AudioWorkletManager {
   }
 
   private async initKey(noteKey: Key): Promise<void> {
-    if (!noteKey.file) {
+    if (!noteKey.blobBuffer) {
       return // I need to do something here even if it never happens
     }
     //creating audiocontext if it doesnt exist
@@ -55,8 +55,8 @@ export class AudioWorkletManager {
 
     const context = this.audioContext;
     // convert uploaded file to AudioBuffer
-    if (!noteKey.buffer) {
-      noteKey.buffer = await context.decodeAudioData(await noteKey.file!.arrayBuffer());
+    if (!noteKey.audioBuffer) {
+      noteKey.audioBuffer = await context.decodeAudioData(await noteKey.blobBuffer!);
     }
 
     if (!noteKey.audioWorkletNode) {

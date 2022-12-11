@@ -9,6 +9,12 @@ type AppTouch = {
 
 export class MobileEventManager extends AppEventManager {
 
+  async addDOMEvents(): Promise<void> {
+    this.keyManager.keysDomElements.forEach(el => {
+      this.addOnTouchEvent(el);
+    });
+  }
+
   private ongoingTouches: AppTouch[] = [];
 
   private copyTouch({ identifier, pageX, pageY, target }: Touch): AppTouch {
@@ -23,12 +29,6 @@ export class MobileEventManager extends AppEventManager {
       }
     }
     return -1;    // not found
-  }
-
-  async addDOMEvents(): Promise<void> {
-    this.keyManager.keysDomElements.forEach(el => {
-      this.addOnTouchEvent(el);
-    });
   }
 
   private async addOnTouchEvent(el: HTMLDivElement): Promise<void> {
