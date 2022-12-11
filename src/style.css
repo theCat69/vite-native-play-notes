@@ -10,17 +10,13 @@
 }
 
 .container {
-  margin-top: 100px;
+  margin-top: 25px;
   display: flex;
   background-color: yellow;
   color: purple;
   max-width: 750px;
   height: 120px;
   justify-content: center;
-}
-
-.container-mobile {
-  margin-top : 0;
 }
 
 .keys {

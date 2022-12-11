@@ -7,8 +7,8 @@ import { WebEventManager } from "./web-event-manager";
 
 export class AppEventManagerFactory {
 
-  static getEventManager(keyManager: KeyManager, audioWorkletManager: AudioWorkletManager) : AppEventManager {
-    if(this.mobileCheck()) {
+  static getEventManager(keyManager: KeyManager, audioWorkletManager: AudioWorkletManager): AppEventManager {
+    if (this.mobileCheck()) {
       return new MobileEventManager(keyManager, audioWorkletManager);
     } else {
       return new WebEventManager(keyManager, audioWorkletManager);
