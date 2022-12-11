@@ -201,9 +201,8 @@ export class KeyManager {
     private nbOfKeyLoaded = 0;
 
     constructor() {
-        this.keyList.forEach((key) => this.fetchMp3WithXhr(key));
-        this.generateDom();
-        this.loadDomKeyElements();
+        this.fetchAllKeysMp3();
+        this.generateDom().then(() => this.loadDomKeyElements());
     }
 
     private async loadDomKeyElements(): Promise<void> {
@@ -211,6 +210,10 @@ export class KeyManager {
         const blackKeys = document.querySelectorAll<HTMLDivElement>('.black-keys')!;
         keys.forEach(key => this.keysDomElements.push(key))
         blackKeys.forEach(key => this.keysDomElements.push(key))
+    }
+    
+    private async fetchAllKeysMp3(): Promise<void> {
+        this.keyList.forEach((key) => this.fetchMp3WithXhr(key));
     }
 
     private async fetchMp3WithXhr(key: Key): Promise<void> {

@@ -7,7 +7,7 @@ export class AudioWorkletManager {
 
     constructor(keyManager: KeyManager) {
         this.keyManager = keyManager;
-        window.addEventListener('Mp3Loaded', () => this.iniKeysEvent())
+        window.addEventListener('Mp3Loaded', () => this.initKeys())
     }
 
     async createWorkletNode(
@@ -26,31 +26,23 @@ export class AudioWorkletManager {
 
     async startAudioSideWorker(noteKey: Key) {
         const context = noteKey.audioContext!;
-        // convert uploaded file to AudioBuffer
-        const buffer = noteKey.buffer!;
         // create source and set buffer
         const source = context.createBufferSource();
-        source.buffer = buffer;
-        // create atan node
-        const atan = noteKey.audioWorkletNode!;
+        source.buffer = noteKey.buffer!;
         // connect everything and automatically start playing
-        source.connect(atan).connect(context.destination);
+        source.connect(noteKey.audioWorkletNode!).connect(context.destination);
         source.start(0);
-        /*   source.onended = () => noteKey.isPlaying = false; */
     }
 
-    private async iniKeysEvent() {
-        await this.initKeys();
-        window.dispatchEvent(new Event('KeysInitialized'));
+    private async initKeys() { 
+        const promises: Promise<void>[] = [];
+        this.keyManager.keyList.forEach(key => promises.push(this.initKey(key)));
+        Promise.all(promises).then(() => window.dispatchEvent(new Event('KeysInitialized')))
     }
 
-    private async initKeys() {
-        this.keyManager.keyList.forEach(key => this.initKey(key));
-    }
-
-    private async initKey(noteKey: Key) {
+    private async initKey(noteKey: Key): Promise<void> {
         if (!noteKey.file) {
-            return
+            return // I need to do something here even if it never happens
         }
         //creating audiocontext if it doesnt exist
         if (!noteKey.audioContext) {
