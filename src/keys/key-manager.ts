@@ -213,6 +213,7 @@ export class KeyManager {
     const blackKeys = document.querySelectorAll<HTMLDivElement>('.black-keys')!;
     keys.forEach(key => this.keysDomElements.push(key))
     blackKeys.forEach(key => this.keysDomElements.push(key))
+    window.dispatchEvent(new Event(KeyManager.NOTE_DOM_READY_EVENT));
   }
 
   private async fetchAllKeysMp3(): Promise<void> {
@@ -252,7 +253,6 @@ export class KeyManager {
       }
     )
     htmlContainer.innerHTML = containerInnerHtml;
-    window.dispatchEvent(new Event(KeyManager.NOTE_DOM_READY_EVENT));
   }
 
   getKey(keyId: string): Key | undefined {
