@@ -18,6 +18,7 @@ import gb3Url from '../../musicPiano/Gb3.mp3';
 import gb4Url from '../../musicPiano/Gb4.mp3';
 import g3Url from '../../musicPiano/G3.mp3';
 import g4Url from '../../musicPiano/G4.mp3';
+import { AppValues } from '../values';
 
 export type Key = {
   id: string;
@@ -230,10 +231,17 @@ export class KeyManager {
     this.keyList.forEach(
       key => {
         if (!key.isWhite) {
-          containerInnerHtml += `<div class="black-keys" id="${key.id}"><div class="name">${key.name}</div><div class="key-to-press">${key.keyPress.toUpperCase()}</div></div>`;
+          containerInnerHtml += `<div class="black-keys" id="${key.id}"><div class="name">${key.name}</div>`;        
         } else {
-          containerInnerHtml += `<div class="keys" id="${key.id}"><div class="key-subcontainer"><div class="name">${key.name}</div><div class="key-to-press">${key.keyPress.toUpperCase()}</div></div></div>`;
+          containerInnerHtml += `<div class="keys" id="${key.id}"><div class="key-subcontainer"><div class="name">${key.name}</div>`;
         }
+        if(!AppValues.IS_MOBILE) {
+          containerInnerHtml += `<div class="key-to-press">${key.keyPress.toUpperCase()}</div>`
+        }
+        if(key.isWhite) {
+          containerInnerHtml += "</div>";
+        }
+        containerInnerHtml += "</div>";
       }
     )
     htmlContainer.innerHTML = containerInnerHtml;
