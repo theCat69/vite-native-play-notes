@@ -1,3 +1,4 @@
+import { AppValues } from "../values";
 import { AppEventManager } from "./app-event-manager";
 import { MobileEventManager } from "./mobile-event-manager";
 
@@ -8,7 +9,7 @@ export class WebEventManager extends AppEventManager {
       this.addMouseEvent(el);
     });
     this.addKeyEvents();
-    if(this.isTouchDevice()) {
+    if(AppValues.IS_TOUCH_DEVICE) {
       new MobileEventManager(this.keyManager, this.audioWorkletManager).addDOMEvents();
     }
   }
@@ -34,9 +35,5 @@ export class WebEventManager extends AppEventManager {
         this.unplay(keyEl);
       }
     }, true);
-  }
-
-  private isTouchDevice() {
-    return (('ontouchstart' in window) || (navigator.maxTouchPoints > 0));
   }
 }
