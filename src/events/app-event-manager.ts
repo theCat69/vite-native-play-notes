@@ -14,11 +14,11 @@ export abstract class AppEventManager {
     this.audioWorkletManager = audioWorkletManager;
   }
 
-  protected play(tgt: any) {
+  protected async play(tgt: any) {
     if (!tgt) {
       return
     }
-    const key = this.keyManager.getKey(tgt.id);
+    const key = await this.keyManager.getKey(tgt.id);
     if (!key || key.isPlaying) {
       return
     }
@@ -27,12 +27,12 @@ export abstract class AppEventManager {
     this.audioWorkletManager.startAudioSideWorker(key);
   }
 
-  protected unplay(tgt: any) {
+  protected async unplay(tgt: any) {
     if (!tgt) {
       return
     }
     tgt.classList.remove('pressed-key');
-    const key = this.keyManager.getKey(tgt.id);
+    const key = await this.keyManager.getKey(tgt.id);
     if (key) {
       key.isPlaying = false;
     }

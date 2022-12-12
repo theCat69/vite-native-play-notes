@@ -247,11 +247,11 @@ export class KeyManager {
     htmlContainer.innerHTML = containerInnerHtml;
   }
 
-  getKey(keyId: string): Key | undefined {
+  async getKey(keyId: string): Promise<Key | undefined> {
     return this.keyList.find((keyOb) => keyId === keyOb.id);
   }
 
-  getKeyByKeyPressed(keyPressed: string): Key | undefined {
+  async getKeyByKeyPressed(keyPressed: string): Promise<Key | undefined> {
     return this.keyList.find(keyObj => keyPressed === keyObj.keyPress);
   }
 }
