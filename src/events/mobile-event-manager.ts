@@ -9,7 +9,7 @@ type AppTouch = {
 
 export class MobileEventManager extends AppEventManager {
 
-  async addSpecificDOMEvents(): Promise<void> {
+  async addPlatformSpecificDOMEvents(): Promise<void> {
     this.keyManager.keysDomElements.forEach(el => {
       this.addOnTouchEvent(el);
     });

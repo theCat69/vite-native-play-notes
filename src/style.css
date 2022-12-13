@@ -1,31 +1,50 @@
-html {
+* {
   margin: 0;
   padding: 0;
 }
 
-.main-container {
+html,
+body {
+  height: 100%;
+}
+
+.main-center-flex {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+#app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 375px;
+  width: 750px;
+}
+
+#app:fullscreen {
+  height: 70%;
+  width: 80%;
+  margin: 10%;
+  padding-left: 1.5%;
+  padding-right: 1.5%;
+  padding-bottom: 3%;
+}
+
 .container {
   margin-top: 25px;
   display: flex;
-  max-width: 750px;
-  height: 120px;
+  background-color: black;
+  width: 100%;
+  height: 100%;
   justify-content: center;
 }
 
 .keys {
   color: black;
   background-color: white;
-  max-width: 75px;
-  min-width: 50px;
-  margin: 0px;
   border: solid;
   display: flex;
-  height: 200px;
   flex-wrap: wrap;
   flex-direction: row;
   align-items: flex-end;
@@ -34,14 +53,24 @@ html {
 .black-keys {
   background-color: black;
   color: white;
-  max-width: 45px;
-  min-width: 40px;
   display: flex;
-  height: 120px;
   flex-direction: column;
   z-index: 9;
-  margin-right: -22.5px;
-  margin-left: -22.5px;
+}
+
+.keys-size {
+  flex-grow: 1;
+  margin: 0px;
+  height: 100%;
+  width: 8%;
+}
+
+.black-keys-size {
+  width: 6%;
+  margin-right: -3%;
+  margin-left: -3%;
+  height: 50%;
+  flex-grow: 1;
 }
 
 .key-subcontainer {
@@ -50,9 +79,7 @@ html {
   flex-direction: column-reverse;
 }
 
-.name {
-  margin: 5px;
-  font-size: 1.2rem;
+.no-pointer-event {
   pointer-events: none;
   -webkit-touch-callout: none;
   /* iOS Safari */
@@ -69,22 +96,14 @@ html {
                                supported by Chrome, Edge, Opera and Firefox */
 }
 
+.name {
+  margin: 5px;
+  font-size: 1rem;
+}
+
 .key-to-press {
   text-align: center;
-  pointer-events: none;
-  -webkit-touch-callout: none;
-  /* iOS Safari */
-  -webkit-user-select: none;
-  /* Safari */
-  -khtml-user-select: none;
-  /* Konqueror HTML */
-  -moz-user-select: none;
-  /* Old versions of Firefox */
-  -ms-user-select: none;
-  /* Internet Explorer/Edge */
-  user-select: none;
-  /* Non-prefixed version, currently
-                                supported by Chrome, Edge, Opera and Firefox */
+  font-size: 0.6rem;
 }
 
 .pressed-key {
@@ -93,7 +112,13 @@ html {
 
 .full-screen-button {
   position: absolute;
-  top: 5px;
-  right: 5px;
-  background-color: red;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  top: 0.2%;
+  right: 0.2%;
+  width: 20px;
+  height: 20px;
 }
+
+

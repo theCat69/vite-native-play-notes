@@ -1,22 +1,24 @@
 
 import { AudioWorkletManager } from "../audio-worklet/audio-worklet-manager";
 import { KeyManager } from "../keys/key-manager";
-import { FullScreenEventManager } from "./full-screen-event-manager";
+import { DOMEventProducer } from "./dom-event-producer";
 
 export abstract class AppEventManager {
 
   protected keyManager: KeyManager;
   protected audioWorkletManager: AudioWorkletManager;
+  private domEventProducers: DOMEventProducer[];
 
-  constructor(keyManager: KeyManager, audioWorkletManager: AudioWorkletManager) {
+  constructor(keyManager: KeyManager, audioWorkletManager: AudioWorkletManager, ...domEventProducers: DOMEventProducer[]) {
     this.keyManager = keyManager;
     this.audioWorkletManager = audioWorkletManager;
+    this.domEventProducers = domEventProducers;
   }
 
-  abstract addSpecificDOMEvents(): Promise<void>;
+  abstract addPlatformSpecificDOMEvents(): Promise<void>;
 
   public async addDOMEvents(): Promise<void> {
-    new FullScreenEventManager();
+    this.domEventProducers.forEach(async (eventProducer) => eventProducer.addDOMEvent());
   }
 
   protected async play(tgt: any) {

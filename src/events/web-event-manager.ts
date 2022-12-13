@@ -4,13 +4,13 @@ import { MobileEventManager } from "./mobile-event-manager";
 
 export class WebEventManager extends AppEventManager {
 
-  async addSpecificDOMEvents(): Promise<void> {
+  async addPlatformSpecificDOMEvents(): Promise<void> {
     this.keyManager.keysDomElements.forEach(el => {
       this.addMouseEvent(el);
     });
     this.addKeyboardEvents();
-    if(AppValues.IS_TOUCH_DEVICE) {
-      new MobileEventManager(this.keyManager, this.audioWorkletManager).addSpecificDOMEvents();
+    if (AppValues.IS_TOUCH_DEVICE) {
+      new MobileEventManager(this.keyManager, this.audioWorkletManager).addPlatformSpecificDOMEvents();
     }
   }
 
@@ -21,7 +21,10 @@ export class WebEventManager extends AppEventManager {
 
   private async addKeyboardEvents(): Promise<void> {
     window.addEventListener("keydown", async (evt: KeyboardEvent) => {
-/*       evt.preventDefault(); */
+      if (evt.code === "F12") {
+        return
+      }
+      evt.preventDefault();
       const keyObj = await this.keyManager.getKeyByKeyPressed(evt.key);
       if (keyObj) {
         const keyEl = document.querySelector<HTMLDivElement>(`#${keyObj.id}`)!;
@@ -30,7 +33,8 @@ export class WebEventManager extends AppEventManager {
     }, true);
 
     window.addEventListener("keyup", async (evt: KeyboardEvent) => {
-/*       evt.preventDefault(); */
+      console.log('key name ' + evt.key + ' key code ' + evt.code);
+      evt.preventDefault();
       const keyObj = await this.keyManager.getKeyByKeyPressed(evt.key);
       if (keyObj) {
         const keyEl = document.querySelector<HTMLDivElement>(`#${keyObj.id}`)!;
