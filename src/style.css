@@ -90,3 +90,10 @@ html {
 .pressed-key {
   background-color: red;
 }
+
+.full-screen-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: red;
+}

@@ -1,5 +1,10 @@
+# project 
 node_modules
 .DS_Store
 dist
 dist-ssr
 *.local
+
+# my own build deploy script that i don't want to share :)
+build-deploy.bat
+build-deploy-exp.bat

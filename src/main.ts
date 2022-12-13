@@ -11,4 +11,11 @@ const keyManager = new KeyManager();
 const audioWorkletManager = new AudioWorkletManager(keyManager);
 const appEventManager = AppEventManagerFactory.getEventManager(keyManager, audioWorkletManager);
 
-Promise.all([dcl, keyDOMReady, keysInitiliazed]).then(() => appEventManager.addDOMEvents());
+Promise.all([dcl, keyDOMReady, keysInitiliazed]).then(() => {
+  appEventManager.addSpecificDOMEvents();
+  appEventManager.addDOMEvents();
+});
+
+
+
+

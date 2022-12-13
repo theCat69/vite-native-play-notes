@@ -1,17 +1,22 @@
 
 import { AudioWorkletManager } from "../audio-worklet/audio-worklet-manager";
 import { KeyManager } from "../keys/key-manager";
+import { FullScreenEventManager } from "./full-screen-event-manager";
 
 export abstract class AppEventManager {
 
   protected keyManager: KeyManager;
   protected audioWorkletManager: AudioWorkletManager;
 
-  abstract addDOMEvents(): Promise<void>;
-
   constructor(keyManager: KeyManager, audioWorkletManager: AudioWorkletManager) {
     this.keyManager = keyManager;
     this.audioWorkletManager = audioWorkletManager;
+  }
+
+  abstract addSpecificDOMEvents(): Promise<void>;
+
+  public async addDOMEvents(): Promise<void> {
+    new FullScreenEventManager();
   }
 
   protected async play(tgt: any) {
@@ -31,9 +36,9 @@ export abstract class AppEventManager {
     if (!tgt) {
       return
     }
-    tgt.classList.remove('pressed-key');
     const key = await this.keyManager.getKey(tgt.id);
     if (key) {
+      tgt.classList.remove('pressed-key');
       key.isPlaying = false;
     }
   }

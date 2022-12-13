@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build --base=/notes",
+    "build-exp": "tsc && vite build --base=/notes_experimental",
     "preview": "vite preview"
   },
   "devDependencies": {
