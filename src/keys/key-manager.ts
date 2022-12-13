@@ -231,12 +231,12 @@ export class KeyManager {
     this.keyList.forEach(
       key => {
         if (!key.isWhite) {
-          containerInnerHtml += `<div class="black-keys" id="${key.id}"><div class="name">${key.name}</div>`;        
+          containerInnerHtml += `<div class="black-keys black-keys-size" id="${key.id}"><div class="name no-pointer-event">${key.name}</div>`;        
         } else {
-          containerInnerHtml += `<div class="keys" id="${key.id}"><div class="key-subcontainer"><div class="name">${key.name}</div>`;
+          containerInnerHtml += `<div class="keys keys-size" id="${key.id}"><div class="key-subcontainer"><div class="name no-pointer-event">${key.name}</div>`;
         }
         if(!AppValues.IS_MOBILE) {
-          containerInnerHtml += `<div class="key-to-press">${key.keyPress.toUpperCase()}</div>`
+          containerInnerHtml += `<div class="key-to-press no-pointer-event">${key.keyPress.toUpperCase()}</div>`
         }
         if(key.isWhite) {
           containerInnerHtml += "</div>";
@@ -247,11 +247,11 @@ export class KeyManager {
     htmlContainer.innerHTML = containerInnerHtml;
   }
 
-  getKey(keyId: string): Key | undefined {
+  async getKey(keyId: string): Promise<Key | undefined> {
     return this.keyList.find((keyOb) => keyId === keyOb.id);
   }
 
-  getKeyByKeyPressed(keyPressed: string): Key | undefined {
+  async getKeyByKeyPressed(keyPressed: string): Promise<Key | undefined> {
     return this.keyList.find(keyObj => keyPressed === keyObj.keyPress);
   }
 }

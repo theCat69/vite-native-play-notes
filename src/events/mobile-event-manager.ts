@@ -9,7 +9,7 @@ type AppTouch = {
 
 export class MobileEventManager extends AppEventManager {
 
-  async addDOMEvents(): Promise<void> {
+  async addPlatformSpecificDOMEvents(): Promise<void> {
     this.keyManager.keysDomElements.forEach(el => {
       this.addOnTouchEvent(el);
     });
@@ -38,8 +38,8 @@ export class MobileEventManager extends AppEventManager {
     el.addEventListener('touchmove', (evt: TouchEvent) => this.handleMove(evt));
   }
 
-  private handleStart(evt: TouchEvent): void {
-    evt.preventDefault();
+  private async handleStart(evt: TouchEvent): Promise<void> {
+  /*   evt.preventDefault(); */
     const touches = evt.changedTouches;
     for (let i = 0; i < touches.length; i++) {
       this.play(touches[i].target);
@@ -47,8 +47,8 @@ export class MobileEventManager extends AppEventManager {
     }
   }
 
-  private handleMove(evt: TouchEvent): void {
-    evt.preventDefault();
+  private async handleMove(evt: TouchEvent): Promise<void> {
+  /*   evt.preventDefault(); */
     const touches = evt.changedTouches;
     for (let i = 0; i < touches.length; i++) {
       const idx = this.ongoingTouchIndexById(touches[i].identifier);
@@ -63,7 +63,7 @@ export class MobileEventManager extends AppEventManager {
     }
   }
 
-  private handleEnd(evt: TouchEvent): void {
+  private async handleEnd(evt: TouchEvent): Promise<void> {
     evt.preventDefault();
     const touches = evt.changedTouches;
     for (let i = 0; i < touches.length; i++) {
@@ -78,7 +78,7 @@ export class MobileEventManager extends AppEventManager {
   }
 
 
-  private handleCancel(evt: TouchEvent): void {
+  private async handleCancel(evt: TouchEvent): Promise<void> {
     evt.preventDefault();
     const touches = evt.changedTouches;
     for (let i = 0; i < touches.length; i++) {
