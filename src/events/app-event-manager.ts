@@ -1,15 +1,15 @@
 
 import { AudioWorkletManager } from "../audio-worklet/audio-worklet-manager";
-import { KeyManager } from "../keys/key-manager";
-import { DOMEventProducer } from "./dom-event-producer";
+import { PianoUIComponent } from "../keys/key-manager";
+import { DOMEventSupplier } from "./dom-event-producer";
 
 export abstract class AppEventManager {
 
-  protected keyManager: KeyManager;
+  protected keyManager: PianoUIComponent;
   protected audioWorkletManager: AudioWorkletManager;
-  private domEventProducers: DOMEventProducer[];
+  private domEventProducers: DOMEventSupplier[];
 
-  constructor(keyManager: KeyManager, audioWorkletManager: AudioWorkletManager, ...domEventProducers: DOMEventProducer[]) {
+  constructor(keyManager: PianoUIComponent, audioWorkletManager: AudioWorkletManager, ...domEventProducers: DOMEventSupplier[]) {
     this.keyManager = keyManager;
     this.audioWorkletManager = audioWorkletManager;
     this.domEventProducers = domEventProducers;

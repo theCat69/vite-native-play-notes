@@ -12,27 +12,38 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%; //fallback
+  width: 100vw;
 }
 
 #app {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 375px;
-  width: 750px;
+  height: 60vh;
+  width: 60%;
+  width: 60vw;
+
+  @media only screen and (max-width: 600px) and (orientation:portrait) {
+    width: 160%;
+    width: 160vw;
+  }
+
+  @media only screen and (max-width: 600px) and (orientation:landscape) {
+    width: 80%;
+    width: 80vw;
+  }
 }
 
 #app:fullscreen {
   height: 70%;
   width: 80%;
-  margin: 10%;
   padding-left: 1.5%;
   padding-right: 1.5%;
   padding-bottom: 3%;
 }
 
 .container {
-  margin-top: 25px;
   display: flex;
   background-color: black;
   width: 100%;
@@ -60,7 +71,6 @@ body {
 
 .keys-size {
   flex-grow: 1;
-  margin: 0px;
   height: 100%;
   width: 8%;
 }
@@ -99,6 +109,10 @@ body {
 .name {
   margin: 5px;
   font-size: 1rem;
+
+  @media only screen and (max-width: 600px) {
+    font-size: 0.8rem;
+  }
 }
 
 .key-to-press {
@@ -111,14 +125,16 @@ body {
 }
 
 .full-screen-button {
-  position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
-  top: 0.2%;
-  right: 0.2%;
+  align-self: flex-end;
+  margin: 10px 0 10px 0;
   width: 20px;
   height: 20px;
+  // margin-top: 10px;
+
+  @media only screen and (max-width: 600px) and (orientation:portrait) {
+    align-self: center;
+  }
 }
-
-

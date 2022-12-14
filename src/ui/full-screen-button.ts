@@ -1,12 +1,13 @@
-import fullScreenIconUrl from '../../svg/full-screen.svg?url';
-import minimizeIconUrl from '../../svg/minimize.svg?url';
-import { DOMEventProducer } from '../events/dom-event-producer';
+import fullScreenIconUrl from '../../svg/full-screen.svg?raw';
+import minimizeIconUrl from '../../svg/minimize.svg?raw';
+import { DOMEventSupplier } from '../events/dom-event-producer';
 import { AppValues } from '../values';
+import { DOMGenerator } from './dom-generator';
 
-export class FullScreenUIComponent implements DOMEventProducer {
+export class FullScreenUIComponent implements DOMEventSupplier, DOMGenerator {
 
-  private fullScreenIcon?: string;
-  private minimizeIcon?: string;
+  private fullScreenIcon: string = fullScreenIconUrl;
+  private minimizeIcon: string = minimizeIconUrl;
   private appElement: HTMLDivElement;
   private fullScreenButton: HTMLDivElement;
   private isInFullScreenMode = false;
@@ -14,17 +15,11 @@ export class FullScreenUIComponent implements DOMEventProducer {
   constructor() {
     this.fullScreenButton = document.querySelector('#full-screen-button')!;
     this.appElement = document.querySelector('#app')!;
-    this.generateDOMForButton();
   }
 
-  private async generateDOMForButton(): Promise<void> {
+  async generateDOM(): Promise<void> {
     if (this.fullScreenButton) {
-      Promise.all([
-        (await fetch(fullScreenIconUrl)).text().then((text) => this.fullScreenIcon = text),
-        (await fetch(minimizeIconUrl)).text().then((text) => this.minimizeIcon = text),
-      ]).then(
-        () => this.fullScreenButton.innerHTML = this.fullScreenIcon!!
-      );
+      this.fullScreenButton.innerHTML = this.fullScreenIcon;
     }
   }
 
@@ -33,27 +28,43 @@ export class FullScreenUIComponent implements DOMEventProducer {
   }
 
   private async addFullScreenEvent() {
-    const fullscreenButton = document.querySelector('#full-screen-button');
-    fullscreenButton?.addEventListener('click', () => {
+    this.appElement?.addEventListener('fullscreenchange', () => this.handleOnScreenChange());
+
+    this.fullScreenButton?.addEventListener('click', () => {
+      console.log(this.isInFullScreenMode);
       if (!this.isInFullScreenMode) {
-        this.appElement?.requestFullscreen().then(() => {
-          if (AppValues.IS_MOBILE) {
-            screen.orientation.lock("landscape");
-          }
-          this.isInFullScreenMode = true
-          this.fullScreenButton.innerHTML = this.minimizeIcon!!;
-          this.fullScreenButton.classList.add('minimize-button');
-        });
+        this.gotFullScreen();
       } else {
-        document.exitFullscreen().then(() => {
-          if (AppValues.IS_MOBILE) {
-            screen.orientation.lock("landscape");
-          }
-          this.isInFullScreenMode = false;
-          this.fullScreenButton.innerHTML = this.fullScreenIcon!!;
-          this.fullScreenButton.classList.remove('minimize-button');
-        });
+        document.exitFullscreen().then(() => this.minimize());
       }
-    })
+    });
+  }
+
+  async gotFullScreen(): Promise<void> {
+    this.appElement?.requestFullscreen().then(() => this.fullScreen());
+  }
+
+  private async handleOnScreenChange() {
+    if (!this.isInFullScreenMode) {
+      this.fullScreenButton.classList.add('minimize-button');
+      this.isInFullScreenMode = true;
+    } else {
+      this.fullScreenButton.classList.remove('minimize-button');
+      this.isInFullScreenMode = false;
+    }
+  }
+
+  private minimize() {
+    if (AppValues.IS_MOBILE) {
+      screen.orientation.lock("portrait");
+    }
+    this.fullScreenButton.innerHTML = this.fullScreenIcon;
+  }
+
+  private fullScreen() {
+    if (AppValues.IS_MOBILE) {
+      screen.orientation.lock("landscape");
+    }
+    this.fullScreenButton.innerHTML = this.minimizeIcon;
   }
 }

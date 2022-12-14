@@ -1,3 +1,3 @@
-export interface DOMEventProducer {
+export interface DOMEventSupplier {
     addDOMEvent(): Promise<void>
 }
