@@ -36,8 +36,13 @@ dcl.then(async () => {
 
   //then on mobile we ask the user if he would like to go in full-screen mode
   if (AppValues.IS_MOBILE) {
+    await fullScreenButton.lockFullScreen();
     document.addEventListener('click', () => {
-      confirm("This website is better experienced in full-screen mode would you like to go to full-screen now ?") ? fullScreenButton.gotFullScreen() : null;
+      fullScreenButton.unlockFullScreen();
+      const confirmed = confirm("This website is better experienced in full-screen mode would you like to go to full-screen now ?");
+      if(confirmed) {
+        fullScreenButton.gotFullScreen()
+      }
     }, { once: true });
   }
 

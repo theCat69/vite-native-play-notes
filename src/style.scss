@@ -29,7 +29,7 @@ body {
     width: 160vw;
   }
 
-  @media only screen and (max-width: 600px) and (orientation:landscape) {
+  @media only screen and (max-width: 800px) and (orientation:landscape) {
     width: 80%;
     width: 80vw;
   }
@@ -133,7 +133,10 @@ body {
   width: 20px;
   height: 20px;
 
-  @media only screen and (max-width: 600px) and (orientation:portrait) {
+  @media only screen and (max-width: 600px) {
     align-self: center;
+    margin: 20px;
+    width: 40px;
+    height: 40px;
   }
 }

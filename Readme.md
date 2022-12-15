@@ -2,7 +2,7 @@
 
 ## Requirements :
 
-* Node.js version 14.18+ or 16+ : [download it](https://nodejs.org/en/)
+* Node.js version 14.18+ or 16+ : [download it](https://nodejs.org)
 
 ## Set up 
 
