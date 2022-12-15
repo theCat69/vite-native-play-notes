@@ -5,6 +5,7 @@ import { PianoEventManagerFactory } from './events/piano-event-manager-factory';
 import { DOMGenerator } from '../../ui/dom-generator';
 import { DOMEventSupplier } from '../../events/dom-event-supplier';
 import { AppValues } from '../../values';
+import { HTTPPrefetchSupplier } from '../../http/http-fetch-supplier';
 
 export type Key = {
   id: string;
@@ -19,7 +20,7 @@ export type Key = {
   isPlaying: boolean;
 }
 
-export class PianoUIComponent implements DOMGenerator, DOMEventSupplier {
+export class PianoUIComponent implements DOMGenerator, DOMEventSupplier, HTTPPrefetchSupplier {
   keyList: Key[] = KEY_LIST;
   keysDomElements: HTMLDivElement[] = [];
 
@@ -29,7 +30,11 @@ export class PianoUIComponent implements DOMGenerator, DOMEventSupplier {
   constructor() {
     this.audioWorkletManager = new AudioWorkletManager(this);
     this.pianoEventManager = PianoEventManagerFactory.getEventManager(this, this.audioWorkletManager);
-    this.fetchAllKeysMp3().then(() => this.audioWorkletManager.initKeys());
+  }
+  
+  async sendPrefetchHTTPRequest(): Promise<void> {
+    await this.fetchAllKeysMp3();
+    await this.audioWorkletManager.initKeys();
   }
 
   async addDOMEvent(): Promise<void> {

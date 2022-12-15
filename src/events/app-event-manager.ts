@@ -8,6 +8,8 @@ export class AppEventManager {
   }
 
   public async addDOMEvents(): Promise<void> {
-    this.domEventSuppliers.forEach(async (eventSupplier) => eventSupplier.addDOMEvent());
+    const promises: Promise<any>[] = [];
+    this.domEventSuppliers.forEach((eventSupplier) => promises.push(eventSupplier.addDOMEvent()));
+    await Promise.all(promises);
   }
 } 

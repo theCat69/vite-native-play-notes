@@ -1,5 +1,5 @@
 import { Key, PianoUIComponent } from "../piano-component";
-import atanProcessorUrl from "./audio-worklet.js?url";
+import KeyProcessor from "./audio-worklet.js?url";
 
 export class AudioWorkletManager {
 
@@ -7,20 +7,13 @@ export class AudioWorkletManager {
 
   private keyManager: PianoUIComponent;
 
-  static readonly KEY_INITIALIZED_EVENT = 'KeysInitialized';
-
   constructor(keyManager: PianoUIComponent) {
     this.keyManager = keyManager;
   }
 
-  async createWorkletNode(context: BaseAudioContext, name: string, url: string) {
-    // ensure audioWorklet has been loaded
-    try {
-      return new AudioWorkletNode(context, name);
-    } catch (err) {
-      await context.audioWorklet.addModule(url);
-      return new AudioWorkletNode(context, name);
-    }
+  async createWorkletNode(context: BaseAudioContext, name: string) {
+    await context.audioWorklet.addModule(KeyProcessor);
+    return new AudioWorkletNode(context, name);
   }
 
   async startAudioSideWorker(noteKey: Key) {
@@ -36,12 +29,12 @@ export class AudioWorkletManager {
   async initKeys() {
     const promises: Promise<void>[] = [];
     this.keyManager.keyList.forEach(key => promises.push(this.initKey(key)));
-    Promise.all(promises).then(() => window.dispatchEvent(new Event(AudioWorkletManager.KEY_INITIALIZED_EVENT)));
+    await Promise.all(promises);
   }
 
   private async initKey(noteKey: Key): Promise<void> {
     if (!noteKey.blobBuffer) {
-      return // I need to do something here even if it never happens
+      return; // I need to do something here even if it never happens
     }
     //creating audiocontext if it doesnt exist
     if (!this.audioContext) {
@@ -55,7 +48,7 @@ export class AudioWorkletManager {
     }
 
     if (!noteKey.audioWorkletNode) {
-      noteKey.audioWorkletNode = await this.createWorkletNode(context, "atan-processor", atanProcessorUrl);
+      noteKey.audioWorkletNode = await this.createWorkletNode(context, "key-processor");
     }
   }
 }

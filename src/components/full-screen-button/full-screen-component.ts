@@ -8,19 +8,14 @@ export class FullScreenButtonUIComponent implements DOMEventSupplier, DOMGenerat
 
   private fullScreenIcon: string = fullScreenIconUrl;
   private minimizeIcon: string = minimizeIconUrl;
-  private appElement: HTMLDivElement;
-  private fullScreenButton: HTMLDivElement;
+  private appElement?: HTMLDivElement;
+  private fullScreenButton?: HTMLDivElement;
   private isInFullScreenMode = false;
 
-  constructor() {
+  async generateDOM(): Promise<void> {
     this.fullScreenButton = document.querySelector('#full-screen-button')!;
     this.appElement = document.querySelector('#app')!;
-  }
-
-  async generateDOM(): Promise<void> {
-    if (this.fullScreenButton) {
-      this.fullScreenButton.innerHTML = this.fullScreenIcon;
-    }
+    this.fullScreenButton.innerHTML = this.fullScreenIcon;
   }
 
   async addDOMEvent(): Promise<void> {
@@ -40,16 +35,16 @@ export class FullScreenButtonUIComponent implements DOMEventSupplier, DOMGenerat
     });
   }
 
-  gotFullScreen() {
+  async gotFullScreen() {
     this.appElement?.requestFullscreen().then(() => this.fullScreen());
   }
 
   private async handleOnScreenChange() {
     if (!this.isInFullScreenMode) {
-      this.fullScreenButton.classList.add('minimize-button');
+      this.fullScreenButton?.classList.add('minimize-button');
       this.isInFullScreenMode = true;
     } else {
-      this.fullScreenButton.classList.remove('minimize-button');
+      this.fullScreenButton?.classList.remove('minimize-button');
       this.isInFullScreenMode = false;
     }
   }
@@ -58,13 +53,13 @@ export class FullScreenButtonUIComponent implements DOMEventSupplier, DOMGenerat
     if (AppValues.IS_MOBILE) {
       screen.orientation.lock("portrait");
     }
-    this.fullScreenButton.innerHTML = this.fullScreenIcon;
+    this.fullScreenButton!!.innerHTML = this.fullScreenIcon;
   }
 
   private fullScreen() {
     if (AppValues.IS_MOBILE) {
       screen.orientation.lock("landscape");
     }
-    this.fullScreenButton.innerHTML = this.minimizeIcon;
+    this.fullScreenButton!!.innerHTML = this.minimizeIcon;
   }
 }
