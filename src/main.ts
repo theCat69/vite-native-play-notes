@@ -1,30 +1,35 @@
-import { AudioWorkletManager } from './audio-worklet/audio-worklet-manager';
-import { AppEventManagerFactory } from './events/app-event-manager-factory';
-import { PianoUIComponent } from './keys/key-manager';
+import { AppEventManager } from './events/app-event-manager';
 import './style.scss';
 import { DOMGeneratorManager } from './ui/dom-generator-manager';
-import { FullScreenUIComponent } from './ui/full-screen-button';
+import { FullScreenButtonUIComponent } from './components/full-screen-button/full-screen-component';
+import { PianoUIComponent } from './components/piano/piano-component';
+import { AudioWorkletManager } from './components/piano/audio-worklet/audio-worklet-manager';
 
+// get all expected event application wide as promise
 const dcl = new Promise((resolve) => window.addEventListener("DOMContentLoaded", resolve, false));
-const keyDOMReady = new Promise((resolve) => window.addEventListener(PianoUIComponent.NOTE_DOM_READY_EVENT, resolve, false));
-const keysInitiliazed = new Promise((resolve) => window.addEventListener(AudioWorkletManager.KEY_INITIALIZED_EVENT, resolve, false));
+const keysInitiliazed = new Promise((resolve) => window.addEventListener(AudioWorkletManager.KEY_INITIALIZED_EVENT, resolve, false)); // we keep this until we create an HTTP initial fetch manager
 
-const keyManager = new PianoUIComponent();
-const audioWorkletManager = new AudioWorkletManager(keyManager);
+//initializing components
+const piano = new PianoUIComponent();
+const fullScreenButton = new FullScreenButtonUIComponent();
 
-const fullScreenButton = new FullScreenUIComponent();
-const domGeneratorManager = new DOMGeneratorManager(fullScreenButton);
+//initializing application DOMGenerator and AppEvent managers
+//registering component by adding them in constructor
+const domGeneratorManager = new DOMGeneratorManager(fullScreenButton, piano);
+const appEventManager = new AppEventManager(piano, fullScreenButton);
 
+//when dom content is initally loaded we needed DOM using javascript
 dcl.then(() => {
-  console.log('dcl resolved');
-  return domGeneratorManager.generateDOM();
+  //then when DOM is fully initialized we add correponding event
+  Promise.all([
+    domGeneratorManager.generateDOM(),
+    keysInitiliazed
+  ]).then(() => {
+    console.log('adding dom events');
+    appEventManager.addDOMEvents();
+  });
 });
 
-Promise.all([dcl, keyDOMReady, keysInitiliazed]).then(() => {
-  const appEventManager = AppEventManagerFactory.getEventManager(keyManager, audioWorkletManager, fullScreenButton);
-  appEventManager.addPlatformSpecificDOMEvents();
-  appEventManager.addDOMEvents();
-});
 
 
 

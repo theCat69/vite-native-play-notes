@@ -1,8 +1,8 @@
-import { AppValues } from "../values";
-import { AppEventManager } from "./app-event-manager";
+import { PianoEventManager } from "./piano-event-manager";
 import { MobileEventManager } from "./mobile-event-manager";
+import { AppValues } from '../../../values';
 
-export class WebEventManager extends AppEventManager {
+export class WebEventManager extends PianoEventManager {
 
   async addPlatformSpecificDOMEvents(): Promise<void> {
     this.keyManager.keysDomElements.forEach(el => {

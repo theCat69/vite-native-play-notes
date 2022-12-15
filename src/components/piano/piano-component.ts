@@ -1,7 +1,10 @@
-import { DOMEventSupplier } from '../events/dom-event-producer';
-import { DOMGenerator } from '../ui/dom-generator';
-import { AppValues } from '../values';
+import { AudioWorkletManager } from './audio-worklet/audio-worklet-manager';
 import { KEY_LIST } from './keys';
+import { PianoEventManager } from './events/piano-event-manager';
+import { PianoEventManagerFactory } from './events/piano-event-manager-factory';
+import { DOMGenerator } from '../../ui/dom-generator';
+import { DOMEventSupplier } from '../../events/dom-event-supplier';
+import { AppValues } from '../../values';
 
 export type Key = {
   id: string;
@@ -18,18 +21,19 @@ export type Key = {
 
 export class PianoUIComponent implements DOMGenerator, DOMEventSupplier {
   keyList: Key[] = KEY_LIST;
-
   keysDomElements: HTMLDivElement[] = [];
 
-  static readonly MP3_READY_EVENT = 'Mp3Loaded';
-  static readonly NOTE_DOM_READY_EVENT = 'NoteDOMReady';
+  audioWorkletManager: AudioWorkletManager;
+  pianoEventManager: PianoEventManager;
 
   constructor() {
-    this.fetchAllKeysMp3();
-    this.generateDOM().then(() => this.loadDomKeyElements());
+    this.audioWorkletManager = new AudioWorkletManager(this);
+    this.pianoEventManager = PianoEventManagerFactory.getEventManager(this, this.audioWorkletManager);
+    this.fetchAllKeysMp3().then(() => this.audioWorkletManager.initKeys());
   }
-  addDOMEvent(): Promise<void> {
-    throw new Error('Method not implemented.');
+
+  async addDOMEvent(): Promise<void> {
+    this.pianoEventManager.addPlatformSpecificDOMEvents();
   }
 
   private async loadDomKeyElements(): Promise<void> {
@@ -37,13 +41,12 @@ export class PianoUIComponent implements DOMGenerator, DOMEventSupplier {
     const blackKeys = document.querySelectorAll<HTMLDivElement>('.black-keys')!;
     keys.forEach(key => this.keysDomElements.push(key))
     blackKeys.forEach(key => this.keysDomElements.push(key))
-    window.dispatchEvent(new Event(PianoUIComponent.NOTE_DOM_READY_EVENT));
   }
 
   private async fetchAllKeysMp3(): Promise<void> {
     const promises: Promise<void>[] = [];
     this.keyList.forEach((key) => promises.push(this.fetchMp3WithXhr(key)));
-    Promise.all(promises).then(() => window.dispatchEvent(new Event(PianoUIComponent.MP3_READY_EVENT)));
+    await Promise.all(promises);
   }
 
   private async fetchMp3WithXhr(key: Key): Promise<void> {
@@ -70,6 +73,7 @@ export class PianoUIComponent implements DOMGenerator, DOMEventSupplier {
       }
     )
     htmlContainer.innerHTML = containerInnerHtml;
+    await this.loadDomKeyElements();
   }
 
   async getKey(keyId: string): Promise<Key | undefined> {

@@ -1,10 +1,10 @@
-import fullScreenIconUrl from '../../svg/full-screen.svg?raw';
-import minimizeIconUrl from '../../svg/minimize.svg?raw';
-import { DOMEventSupplier } from '../events/dom-event-producer';
-import { AppValues } from '../values';
-import { DOMGenerator } from './dom-generator';
+import fullScreenIconUrl from '../../../svg/full-screen.svg?raw';
+import minimizeIconUrl from '../../../svg/minimize.svg?raw';
+import { DOMEventSupplier } from '../../events/dom-event-supplier';
+import { AppValues } from '../../values';
+import { DOMGenerator } from '../../ui/dom-generator';
 
-export class FullScreenUIComponent implements DOMEventSupplier, DOMGenerator {
+export class FullScreenButtonUIComponent implements DOMEventSupplier, DOMGenerator {
 
   private fullScreenIcon: string = fullScreenIconUrl;
   private minimizeIcon: string = minimizeIconUrl;

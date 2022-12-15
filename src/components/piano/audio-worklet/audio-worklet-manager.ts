@@ -1,4 +1,4 @@
-import { Key, PianoUIComponent } from "../keys/key-manager";
+import { Key, PianoUIComponent } from "../piano-component";
 import atanProcessorUrl from "./audio-worklet.js?url";
 
 export class AudioWorkletManager {
@@ -11,7 +11,6 @@ export class AudioWorkletManager {
 
   constructor(keyManager: PianoUIComponent) {
     this.keyManager = keyManager;
-    window.addEventListener(PianoUIComponent.MP3_READY_EVENT, () => this.initKeys());
   }
 
   async createWorkletNode(context: BaseAudioContext, name: string, url: string) {
@@ -34,7 +33,7 @@ export class AudioWorkletManager {
     source.start(0);
   }
 
-  private async initKeys() {
+  async initKeys() {
     const promises: Promise<void>[] = [];
     this.keyManager.keyList.forEach(key => promises.push(this.initKey(key)));
     Promise.all(promises).then(() => window.dispatchEvent(new Event(AudioWorkletManager.KEY_INITIALIZED_EVENT)));
@@ -52,7 +51,7 @@ export class AudioWorkletManager {
     const context = this.audioContext;
     // convert uploaded file to AudioBuffer
     if (!noteKey.audioBuffer) {
-      noteKey.audioBuffer = await context.decodeAudioData(noteKey.blobBuffer!);
+      noteKey.audioBuffer = await context.decodeAudioData(noteKey.blobBuffer!!);
     }
 
     if (!noteKey.audioWorkletNode) {

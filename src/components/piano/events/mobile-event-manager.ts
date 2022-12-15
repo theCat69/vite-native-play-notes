@@ -1,4 +1,4 @@
-import { AppEventManager } from "./app-event-manager";
+import { PianoEventManager } from "./piano-event-manager";
 
 type AppTouch = {
   identifier: number;
@@ -7,7 +7,7 @@ type AppTouch = {
   target: any;
 }
 
-export class MobileEventManager extends AppEventManager {
+export class MobileEventManager extends PianoEventManager {
 
   async addPlatformSpecificDOMEvents(): Promise<void> {
     this.keyManager.keysDomElements.forEach(el => {
