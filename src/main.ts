@@ -4,6 +4,7 @@ import { DOMGeneratorManager } from './ui/dom-generator-manager';
 import { FullScreenButtonUIComponent } from './components/full-screen-button/full-screen-component';
 import { PianoUIComponent } from './components/piano/piano-component';
 import { AudioWorkletManager } from './components/piano/audio-worklet/audio-worklet-manager';
+import { AppValues } from './values';
 
 // get all expected event application wide as promise
 const dcl = new Promise((resolve) => window.addEventListener("DOMContentLoaded", resolve, false));
@@ -19,15 +20,21 @@ const domGeneratorManager = new DOMGeneratorManager(fullScreenButton, piano);
 const appEventManager = new AppEventManager(piano, fullScreenButton);
 
 //when dom content is initally loaded we needed DOM using javascript
-dcl.then(() => {
-  //then when DOM is fully initialized we add correponding event
-  Promise.all([
+dcl.then(async () => {
+  await Promise.all([
     domGeneratorManager.generateDOM(),
     keysInitiliazed
-  ]).then(() => {
-    console.log('adding dom events');
-    appEventManager.addDOMEvents();
-  });
+  ]);
+  
+  //then when DOM is fully initialized we add correponding event
+  await appEventManager.addDOMEvents();
+
+  //then on mobile we ask the user if he would like to go in full-screen mode
+  if(AppValues.IS_MOBILE) {
+    document.addEventListener('click', () => {
+      confirm("This website is better experienced in full-screen mode would you like to proceed ?") ? fullScreenButton.gotFullScreen() : null;
+    }, { once: true });
+  }
 });
 
 

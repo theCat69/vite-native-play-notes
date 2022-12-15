@@ -40,7 +40,7 @@ export class FullScreenButtonUIComponent implements DOMEventSupplier, DOMGenerat
     });
   }
 
-  async gotFullScreen(): Promise<void> {
+  gotFullScreen() {
     this.appElement?.requestFullscreen().then(() => this.fullScreen());
   }
 
