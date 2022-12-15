@@ -13,11 +13,11 @@ export class FullScreenButtonUIComponent implements DOMEventSupplier, DOMGenerat
   private isInFullScreenMode = false;
 
   async generateDOM(): Promise<void> {
-    this.fullScreenButton = document.querySelector('#full-screen-button')!;
-    this.appElement = document.querySelector('#app')!;
+    this.fullScreenButton = document.querySelector('#full-screen-button')!!;
+    this.appElement = document.querySelector('#app')!!;
     this.fullScreenButton.innerHTML = this.fullScreenIcon;
   }
-
+  
   async addDOMEvent(): Promise<void> {
     this.addFullScreenEvent();
   }
@@ -26,17 +26,21 @@ export class FullScreenButtonUIComponent implements DOMEventSupplier, DOMGenerat
     this.appElement?.addEventListener('fullscreenchange', () => this.handleOnScreenChange());
 
     this.fullScreenButton?.addEventListener('click', () => {
-      console.log(this.isInFullScreenMode);
       if (!this.isInFullScreenMode) {
         this.gotFullScreen();
       } else {
-        document.exitFullscreen().then(() => this.minimize());
+        (document.exitFullscreen() || (document as any).webkitCancelFullScreen())
+          .then(() => this.minimize());
       }
     });
   }
 
   async gotFullScreen() {
-    this.appElement?.requestFullscreen().then(() => this.fullScreen());
+    this.requestFullScreen(this.appElement).then(() => this.fullScreen());
+  }
+
+  private requestFullScreen(el: any) {
+    return el.requestFullscreen() || el.webkitRequestFullscreen();
   }
 
   private async handleOnScreenChange() {

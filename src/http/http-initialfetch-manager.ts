@@ -7,7 +7,7 @@ export class HTTPInitialFecthManager {
         this.httpPrefetchSuppliers = httpPrefetchSuppliers;
     }
 
-    async sendPrefetchHTTPRequest() {
+    async sendPrefetchHTTPRequest(): Promise<void> {
         const promises: Promise<any>[] = [];
         this.httpPrefetchSuppliers.forEach((httpPrefetchSupplier) => promises.push(httpPrefetchSupplier.sendPrefetchHTTPRequest()));
         await Promise.all(promises);
