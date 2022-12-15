@@ -11,6 +11,7 @@ export class FullScreenButtonUIComponent implements DOMEventSupplier, DOMGenerat
   private appElement?: HTMLDivElement;
   private fullScreenButton?: HTMLDivElement;
   private isInFullScreenMode = false;
+  private isLocked = false;
 
   async generateDOM(): Promise<void> {
     this.fullScreenButton = document.querySelector('#full-screen-button')!!;
@@ -26,6 +27,9 @@ export class FullScreenButtonUIComponent implements DOMEventSupplier, DOMGenerat
     this.appElement?.addEventListener('fullscreenchange', () => this.handleOnScreenChange());
 
     this.fullScreenButton?.addEventListener('click', () => {
+      if(this.isLocked) {
+        return
+      }
       if (!this.isInFullScreenMode) {
         this.gotFullScreen();
       } else {
@@ -65,5 +69,13 @@ export class FullScreenButtonUIComponent implements DOMEventSupplier, DOMGenerat
       screen.orientation.lock("landscape");
     }
     this.fullScreenButton!!.innerHTML = this.minimizeIcon;
+  }
+
+  async lockFullScreen() {
+    this.isLocked = true;
+  }
+
+  async unlockFullScreen() {
+    this.isLocked = false;
   }
 }
