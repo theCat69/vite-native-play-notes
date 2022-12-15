@@ -20,24 +20,30 @@ const domGeneratorManager = new DOMGeneratorManager(piano, fullScreenButton);
 const appEventManager = new AppEventManager(piano, fullScreenButton);
 
 //Starting to fetch file by HTTP
-const httpInitialFecthPromise = httpInitialFecthManager.sendPrefetchHTTPRequest()
+const httpInitialFecthPromise = httpInitialFecthManager.sendPrefetchHTTPRequest();
 
 dcl.then(async () => {
- //when dom content is initally loaded we needed DOM using javascript
- await domGeneratorManager.generateDOM();
-});
+  //waitint for DOM and http inital fetch to go further
+  await Promise.all([
+    //when dom content is initally loaded we needed DOM using javascript
+    domGeneratorManager.generateDOM(),
+    httpInitialFecthPromise
+  ]);
 
-Promise.all([dcl, httpInitialFecthPromise]).then(async () => {
+
   //then when DOM is fully initialized we add corresponding event
   await appEventManager.addDOMEvents();
 
   //then on mobile we ask the user if he would like to go in full-screen mode
-  if(AppValues.IS_MOBILE) {
+  if (AppValues.IS_MOBILE) {
     document.addEventListener('click', () => {
       confirm("This website is better experienced in full-screen mode would you like to go to full-screen now ?") ? fullScreenButton.gotFullScreen() : null;
     }, { once: true });
   }
+
 });
+
+
 
 
 
