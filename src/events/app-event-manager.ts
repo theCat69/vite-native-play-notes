@@ -1,47 +1,13 @@
+import { DOMEventSupplier } from './dom-event-supplier';
 
-import { AudioWorkletManager } from "../audio-worklet/audio-worklet-manager";
-import { KeyManager } from "../keys/key-manager";
-import { DOMEventProducer } from "./dom-event-producer";
+export class AppEventManager {
+  private domEventSuppliers: DOMEventSupplier[];
 
-export abstract class AppEventManager {
-
-  protected keyManager: KeyManager;
-  protected audioWorkletManager: AudioWorkletManager;
-  private domEventProducers: DOMEventProducer[];
-
-  constructor(keyManager: KeyManager, audioWorkletManager: AudioWorkletManager, ...domEventProducers: DOMEventProducer[]) {
-    this.keyManager = keyManager;
-    this.audioWorkletManager = audioWorkletManager;
-    this.domEventProducers = domEventProducers;
+  constructor(...domEventSuppliers: DOMEventSupplier[]) {
+    this.domEventSuppliers = domEventSuppliers;
   }
-
-  abstract addPlatformSpecificDOMEvents(): Promise<void>;
 
   public async addDOMEvents(): Promise<void> {
-    this.domEventProducers.forEach(async (eventProducer) => eventProducer.addDOMEvent());
+    this.domEventSuppliers.forEach(async (eventSupplier) => eventSupplier.addDOMEvent());
   }
-
-  protected async play(tgt: any) {
-    if (!tgt) {
-      return
-    }
-    const key = await this.keyManager.getKey(tgt.id);
-    if (!key || key.isPlaying) {
-      return
-    }
-    tgt.classList.add('pressed-key');
-    key.isPlaying = true;
-    this.audioWorkletManager.startAudioSideWorker(key);
-  }
-
-  protected async unplay(tgt: any) {
-    if (!tgt) {
-      return
-    }
-    const key = await this.keyManager.getKey(tgt.id);
-    if (key) {
-      tgt.classList.remove('pressed-key');
-      key.isPlaying = false;
-    }
-  }
-}
+} 

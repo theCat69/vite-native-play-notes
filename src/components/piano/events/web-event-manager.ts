@@ -1,8 +1,8 @@
-import { AppValues } from "../values";
-import { AppEventManager } from "./app-event-manager";
+import { PianoEventManager } from "./piano-event-manager";
 import { MobileEventManager } from "./mobile-event-manager";
+import { AppValues } from '../../../values';
 
-export class WebEventManager extends AppEventManager {
+export class WebEventManager extends PianoEventManager {
 
   async addPlatformSpecificDOMEvents(): Promise<void> {
     this.keyManager.keysDomElements.forEach(el => {
@@ -22,7 +22,7 @@ export class WebEventManager extends AppEventManager {
   private async addKeyboardEvents(): Promise<void> {
     window.addEventListener("keydown", async (evt: KeyboardEvent) => {
       if (evt.code === "F12") {
-        return
+        return;
       }
       evt.preventDefault();
       const keyObj = await this.keyManager.getKeyByKeyPressed(evt.key);
@@ -33,7 +33,7 @@ export class WebEventManager extends AppEventManager {
     }, true);
 
     window.addEventListener("keyup", async (evt: KeyboardEvent) => {
-      console.log('key name ' + evt.key + ' key code ' + evt.code);
+      // console.log('key name ' + evt.key + ' key code ' + evt.code);
       evt.preventDefault();
       const keyObj = await this.keyManager.getKeyByKeyPressed(evt.key);
       if (keyObj) {
