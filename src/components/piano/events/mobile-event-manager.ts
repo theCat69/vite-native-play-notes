@@ -39,7 +39,7 @@ export class MobileEventManager extends PianoEventManager {
   }
 
   private async handleStart(evt: TouchEvent): Promise<void> {
-  /*   evt.preventDefault(); */
+    /*   evt.preventDefault(); */
     const touches = evt.changedTouches;
     for (let i = 0; i < touches.length; i++) {
       this.play(touches[i].target);
@@ -48,7 +48,7 @@ export class MobileEventManager extends PianoEventManager {
   }
 
   private async handleMove(evt: TouchEvent): Promise<void> {
-  /*   evt.preventDefault(); */
+    /*   evt.preventDefault(); */
     const touches = evt.changedTouches;
     for (let i = 0; i < touches.length; i++) {
       const idx = this.ongoingTouchIndexById(touches[i].identifier);

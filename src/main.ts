@@ -25,7 +25,7 @@ const httpInitialFecthPromise = httpInitialFecthManager.sendPrefetchHTTPRequest(
 dcl.then(async () => {
   //waitint for DOM and http inital fetch to go further
   await Promise.all([
-    //when dom content is initally loaded we needed DOM using javascript
+    //when dom content is initally loaded we generate DOM using javascript
     domGeneratorManager.generateDOM(),
     httpInitialFecthPromise
   ]);
@@ -45,3 +45,6 @@ dcl.then(async () => {
     }, { once: true });
   }
 });
+
+const changeOctaveButton = document.querySelector<HTMLDivElement>("#change-octave-button")!!;
+changeOctaveButton.addEventListener("click", () => piano.setOnlyOneOctaves());
