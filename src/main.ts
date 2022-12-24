@@ -30,7 +30,6 @@ dcl.then(async () => {
     httpInitialFecthPromise
   ]);
 
-
   //then when DOM is fully initialized we add corresponding event
   await appEventManager.addDOMEvents();
 
@@ -40,17 +39,9 @@ dcl.then(async () => {
     document.addEventListener('click', () => {
       fullScreenButton.unlockFullScreen();
       const confirmed = confirm("This website is better experienced in full-screen mode would you like to go to full-screen now ?");
-      if(confirmed) {
+      if (confirmed) {
         fullScreenButton.gotFullScreen()
       }
     }, { once: true });
   }
-
 });
-
-
-
-
-
-
-

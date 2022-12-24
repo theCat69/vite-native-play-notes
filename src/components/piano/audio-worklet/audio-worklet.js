@@ -1,10 +1,11 @@
 class KeyProcessor extends AudioWorkletProcessor {
   process(inputs, outputs) {
-    for (let i = inputs.length; i--;) {
-      for (let j = inputs[i].length; j--;) {
-        for (let k = inputs[i][j].length; k--;) {
-          outputs[i][j][k] = inputs[i][j][k];
-        }
+    const input = inputs[0];
+    const output = outputs[0];
+    const gain = 8;
+    for (let channel = 0; channel < input.length; channel++) {
+      for (let i = 0; i < input[channel].length; i++) {
+        output[channel][i] = input[channel][i] * gain;
       }
     }
     return true;
